@@ -3,16 +3,19 @@ package com.example.app2
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -63,31 +66,39 @@ fun MainLayout() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            var message by remember { mutableStateOf("Button Taps: 0") }
-            Log.i("MainActivity", "1. $message")
-            Text(
-                text = message,
-                fontSize = 36.sp
-            )
+
+            var imgNum
+            var d = R.drawable.spooky
+            var image by remember {mutableStateOf(d)}
+
+            Surface (
+                modifier = Modifier.size(300.dp)
+            ){
+                Image(
+                    painter = painterResource(image),
+                    contentDescription = "scary",
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
             Button(
                 onClick = {
-                    timesClicked++
-                    message = "Button Taps: $timesClicked"
-                    Log.i("main activity", "button Clicked!")
+                    d = R.drawable.spooky
+                    imgNum++
                 }
             ) {
                 Text(
-                    text = "Click here",
+                    text = "Next",
                     fontSize = 24.sp
                 )
             }
+
             val context = LocalContext.current
+
             Button(
                 onClick = {
                     val toast = Toast.makeText(context, "button 2 clicked", Toast.LENGTH_SHORT)
                     toast.show()
-                    timesClicked++
-                    message = "Button Taps: $timesClicked"
                     Log.i("main activity","button 2 clicked")}
             ) {
                 Row () {
@@ -99,7 +110,7 @@ fun MainLayout() {
 
 
                     Text(
-                        text = "Click for toast",
+                        text = "Hide/Unhide",
                         fontSize = 24.sp
 
 
@@ -107,6 +118,16 @@ fun MainLayout() {
                 }
             }
 
+            Button(
+                onClick = {
+
+                }
+            ){
+                Text(
+                    text = "Change color",
+                    fontSize = 24.sp
+                )
+            }
 
         }
     }
