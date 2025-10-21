@@ -24,6 +24,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,10 +57,22 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainLayout() {
 
-    var timesClicked = 0
+    var backcolor by remember { mutableStateOf(Color.LightGray) }
+    var imgNum by remember { mutableIntStateOf(1) }
+    var alpha by remember { mutableFloatStateOf(1.0f) }
+    var visible by remember { mutableStateOf(true) }
+    var image = when (imgNum) {
+        1 -> R.drawable.pumpkin
+        2 -> R.drawable.spooky
+        else -> R.drawable.pacman
+    }
+
+    if (imgNum > 3){
+        imgNum = 1
+    }
 
     Surface(
-        color = Color.LightGray,
+        color = backcolor,
         modifier = Modifier.fillMaxSize()
     ) {
         Column(
@@ -67,23 +81,23 @@ fun MainLayout() {
             modifier = Modifier.fillMaxSize()
         ) {
 
-            var imgNum
-            var d = R.drawable.spooky
-            var image by remember {mutableStateOf(d)}
 
-            Surface (
-                modifier = Modifier.size(300.dp)
-            ){
-                Image(
-                    painter = painterResource(image),
-                    contentDescription = "scary",
-                    modifier = Modifier.fillMaxSize()
-                )
+            Surface(
+                modifier = Modifier
+                    .size(300.dp),
+                color = backcolor
+            ) {
+                if (visible) {
+                    Image(
+                        painter = painterResource(image),
+                        contentDescription = "scary",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
 
             Button(
                 onClick = {
-                    d = R.drawable.spooky
                     imgNum++
                 }
             ) {
@@ -99,7 +113,9 @@ fun MainLayout() {
                 onClick = {
                     val toast = Toast.makeText(context, "button 2 clicked", Toast.LENGTH_SHORT)
                     toast.show()
-                    Log.i("main activity","button 2 clicked")}
+                    Log.i("main activity","button 2 clicked")
+                    visible = !visible
+                }
             ) {
                 Row () {
                     Icon(
@@ -120,7 +136,12 @@ fun MainLayout() {
 
             Button(
                 onClick = {
-
+                    if(backcolor == Color.LightGray){
+                        backcolor = Color.DarkGray
+                    }
+                    else{
+                        backcolor = Color.LightGray
+                    }
                 }
             ){
                 Text(
