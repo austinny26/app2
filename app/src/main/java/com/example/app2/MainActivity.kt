@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -81,6 +82,7 @@ fun MainLayout() {
             modifier = Modifier.fillMaxSize()
         ) {
 
+            val context = LocalContext.current
 
             Surface(
                 modifier = Modifier
@@ -91,7 +93,13 @@ fun MainLayout() {
                     Image(
                         painter = painterResource(image),
                         contentDescription = "scary",
+                        alpha = alpha,
                         modifier = Modifier.fillMaxSize()
+                            .clickable(
+                                onClick = {
+                                    alpha = alpha - .2f
+                                }
+                            )
                     )
                 }
             }
@@ -107,7 +115,6 @@ fun MainLayout() {
                 )
             }
 
-            val context = LocalContext.current
 
             Button(
                 onClick = {
