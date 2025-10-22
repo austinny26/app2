@@ -18,9 +18,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,6 +33,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import java.nio.file.WatchEvent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +63,8 @@ fun MainLayout() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
+
+            TimerBox()
             ImageDisplay(
                 imageRes = when (imgNum) {
                     1 -> R.drawable.pumpkin
@@ -88,6 +94,51 @@ fun MainLayout() {
     }
 }
 
+
+@Composable
+fun TimerBox(){
+    var activatetimer by remember { mutableStateOf(false) }
+    var time by remember { mutableLongStateOf(0) }
+    LaunchedEffect(key1 = activatetimer) {
+        while (activatetimer){
+            delay(100L)
+            time += 100L
+        }
+    }
+
+    Column(
+        modifier = Modifier.size(125.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Timer: ${time / 1000.0}",
+            fontSize = 20.sp
+        )
+        Button(
+            onClick = {
+                activatetimer = !activatetimer
+            },
+
+        ) {
+            Text(
+                text = if(activatetimer) "Pause" else "Start",
+                fontSize = 20.sp
+            )
+        }
+        Button(
+            onClick = {
+                time = 0L
+            },
+
+            ) {
+            Text(
+                text = "Reset",
+                fontSize = 20.sp
+            )
+        }
+    }
+}
 @Composable
 fun ImageDisplay(
     imageRes: Int,
