@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import java.nio.file.WatchEvent
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +50,7 @@ fun MainLayout() {
     var imgNum by remember { mutableIntStateOf(1) }
     var alpha by remember { mutableFloatStateOf(1.0f) }
     var visible by remember { mutableStateOf(true) }
+    var autoAdvanceIsRunning by remember { mutableStateOf(false) }
 
     if (imgNum > 3) imgNum = 1
     if (imgNum < 1) imgNum = 3
@@ -79,7 +80,7 @@ fun MainLayout() {
                 },
                 background = backColor
             )
-            NextButton(onNext = { imgNum++ })
+            NextButton(autoAdvanceIsRunning, click = {imgNum++})
             VisibilityToggleButton(
                 visible = visible,
                 onToggle = { visible = !visible }
@@ -90,6 +91,18 @@ fun MainLayout() {
                     backColor = if (backColor == Color.Cyan) Color.Yellow else Color.Cyan
                 }
             )
+            AutoAdvanceButton(autoAdvanceIsRunning,
+                click = {
+                    autoAdvanceIsRunning = !autoAdvanceIsRunning
+                }
+            ) {
+                imgNum++
+                if (imgNum == 4) {
+                    imgNum = 1
+                }
+            }
+
+
         }
     }
 }
@@ -139,6 +152,25 @@ fun TimerBox(){
         }
     }
 }
+
+@Composable
+fun AutoAdvanceButton(autoAdvanceIsRunning: Boolean, click: () -> Unit, advance: () -> Unit) {
+    LaunchedEffect(key1 = autoAdvanceIsRunning) {
+        while (autoAdvanceIsRunning) {
+            delay(2000L)
+            advance()  // must add () to invoke lambda
+        }
+    }
+    Button(
+        onClick = click
+    ) {
+        Text(
+            text = "Auto Advance",
+            fontSize = 24.sp
+        )
+    }
+}
+
 @Composable
 fun ImageDisplay(
     imageRes: Int,
@@ -165,11 +197,18 @@ fun ImageDisplay(
 }
 
 @Composable
-fun NextButton(onNext: () -> Unit) {
-    Button(onClick = onNext) {
-        Text(text = "Next", fontSize = 24.sp)
+fun NextButton(autoAdvance: Boolean, click: () -> Unit) {
+    Button(
+        onClick = click,
+        enabled = !autoAdvance
+    ) {
+        Text(
+            text = "Next",
+            fontSize = 24.sp,
+        )
     }
 }
+
 
 @Composable
 fun VisibilityToggleButton(visible: Boolean, onToggle: () -> Unit) {
