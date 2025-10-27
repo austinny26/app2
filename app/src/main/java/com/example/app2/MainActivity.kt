@@ -111,11 +111,14 @@ fun MainLayout() {
 @Composable
 fun TimerBox(){
     var activatetimer by remember { mutableStateOf(false) }
-    var time by remember { mutableLongStateOf(0) }
+    var time by remember { mutableLongStateOf(10000L) }
     LaunchedEffect(key1 = activatetimer) {
         while (activatetimer){
             delay(100L)
-            time += 100L
+            time -= 100L
+            if (time == 0L){
+                activatetimer = false
+            }
         }
     }
 
@@ -129,6 +132,7 @@ fun TimerBox(){
             fontSize = 20.sp
         )
         Button(
+            enabled = time > 0,
             onClick = {
                 activatetimer = !activatetimer
             },
@@ -141,7 +145,7 @@ fun TimerBox(){
         }
         Button(
             onClick = {
-                time = 0L
+                time = 10000L
             },
 
             ) {
